@@ -5,10 +5,10 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import akka.stream.testkit.TestSubscriber.Probe
 import akka.stream.testkit.scaladsl.TestSink
-import org.scalatest.{BeforeAndAfterAll, WordSpec, Matchers}
+import org.scalatest.{ BeforeAndAfterAll, WordSpec, Matchers }
 
 class SimpleStreamsSpec extends WordSpec with Matchers
-  with BeforeAndAfterAll {
+    with BeforeAndAfterAll {
 
   implicit val sys = ActorSystem(getClass.getSimpleName)
   implicit val mat = ActorMaterializer()
@@ -27,7 +27,7 @@ class SimpleStreamsSpec extends WordSpec with Matchers
       probe
         .requestNext(1)
         .request(1)
-          .expectNext(2)
+        .expectNext(2)
     }
   }
 

@@ -1,16 +1,17 @@
 /*
  * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
  */
+
 package akka.stream.scaladsl.xml
 
 import akka.NotUsed
 import akka.stream.scaladsl.Flow
-import akka.stream.{Attributes, FlowShape, Inlet, Outlet}
-import akka.stream.stage.{GraphStage, GraphStageLogic, InHandler, OutHandler}
+import akka.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import akka.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import akka.util.ByteString
-import com.fasterxml.aalto.{AsyncByteArrayFeeder, AsyncXMLInputFactory, AsyncXMLStreamReader}
+import com.fasterxml.aalto.{ AsyncByteArrayFeeder, AsyncXMLInputFactory, AsyncXMLStreamReader }
 import com.fasterxml.aalto.stax.InputFactoryImpl
-import scala.annotation.{tailrec, varargs}
+import scala.annotation.{ tailrec, varargs }
 import scala.collection.immutable
 
 object Xml {
@@ -39,33 +40,33 @@ object Xml {
   final case class CData(text: String) extends TextEvent
 
   /**
-    * Parser Flow that takes a stream of ByteStrings and parses them to XML events similar to SAX.
-    */
+   * Parser Flow that takes a stream of ByteStrings and parses them to XML events similar to SAX.
+   */
   val parser: Flow[ByteString, ParseEvent, NotUsed] =
     Flow.fromGraph(new StreamingXmlParser)
 
   /**
-    * A Flow that transforms a stream of XML ParseEvents. This stage coalesces consequitive CData and Characters
-    * events into a single Characters event or fails if the buffered string is larger than the maximum defined.
-    */
+   * A Flow that transforms a stream of XML ParseEvents. This stage coalesces consequitive CData and Characters
+   * events into a single Characters event or fails if the buffered string is larger than the maximum defined.
+   */
   def coalesce(maximumTextLength: Int): Flow[ParseEvent, ParseEvent, NotUsed] =
     Flow.fromGraph(new Coalesce(maximumTextLength))
 
   /**
-    * A Flow that transforms a stream of XML ParseEvents. This stage filters out any event not corresponding to
-    * a certain path in the XML document. Any event that is under the specified path (including subpaths) is passed
-    * through.
-    */
+   * A Flow that transforms a stream of XML ParseEvents. This stage filters out any event not corresponding to
+   * a certain path in the XML document. Any event that is under the specified path (including subpaths) is passed
+   * through.
+   */
   def subSlice(path: immutable.Seq[String]): Flow[ParseEvent, ParseEvent, NotUsed] =
     Flow.fromGraph(new SubSlice(path))
 
   /**
-    * A Flow that transforms a stream of XML ParseEvents. This stage filters out any event not corresponding to
-    * a certain path in the XML document. Any event that is under the specified path (including subpaths) is passed
-    * through.
-    */
+   * A Flow that transforms a stream of XML ParseEvents. This stage filters out any event not corresponding to
+   * a certain path in the XML document. Any event that is under the specified path (including subpaths) is passed
+   * through.
+   */
   @varargs def subSlice(path: String*): Flow[ParseEvent, ParseEvent, NotUsed] =
-  Flow.fromGraph(new SubSlice(path.toList))
+    Flow.fromGraph(new SubSlice(path.toList))
 
   private class StreamingXmlParser extends GraphStage[FlowShape[ByteString, ParseEvent]] {
     val in: Inlet[ByteString] = Inlet("XMLParser.in")
@@ -134,8 +135,7 @@ object Xml {
 
               // Do not support DTD, SPACE, NAMESPACE, NOTATION_DECLARATION, ENTITY_DECLARATION, PROCESSING_INSTRUCTION
               // ATTRIBUTE is handled in START_ELEMENT implicitly
-
-              case x =>
+              case _ =>
                 if (parser.hasNext) advanceParser()
                 else completeStage()
             }
@@ -160,7 +160,7 @@ object Xml {
           case t: TextEvent =>
             if (t.text.length + buffer.length > maximumTextLength)
               failStage(new IllegalStateException(s"Too long character sequence, maximum is $maximumTextLength but got " +
-                s"${t.text.length + buffer.length - maximumTextLength} more "))
+                s"${ t.text.length + buffer.length - maximumTextLength } more"))
             else {
               buffer.append(t.text)
               isBuffering = true
@@ -173,7 +173,7 @@ object Xml {
               buffer.clear()
               emit(out, Characters(coalesced),
                 () => emit(out, other,
-                  () => if (isClosed(in)) completeStage()))
+                () => if (isClosed(in)) completeStage()))
             } else {
               push(out, other)
             }
@@ -207,6 +207,7 @@ object Xml {
             case start: StartElement =>
               depth += 1
               push(out, start)
+
             case end: EndElement =>
               if (depth == 0) {
                 expected = matchedSoFar.head :: Nil
@@ -217,6 +218,7 @@ object Xml {
                 depth -= 1
                 push(out, end)
               }
+
             case other =>
               push(out, other)
           }
@@ -238,28 +240,28 @@ object Xml {
             }
             pull(in)
 
-          case EndElement(name) =>
+          case EndElement(_) =>
             expected = matchedSoFar.head :: expected
             matchedSoFar = matchedSoFar.tail
             pull(in)
 
-          case other =>
-            pull(in)
+          case _ => pull(in)
         }
 
         lazy val noMatch: InHandler = new InHandler {
           var depth = 0
 
           override def onPush(): Unit = grab(in) match {
-            case start: StartElement =>
+            case _: StartElement =>
               depth += 1
               pull(in)
-            case end: EndElement =>
+
+            case _: EndElement =>
               if (depth == 0) setHandler(in, partialMatch)
               else depth -= 1
               pull(in)
-            case other =>
-              pull(in)
+
+            case _ => pull(in)
           }
         }
       }

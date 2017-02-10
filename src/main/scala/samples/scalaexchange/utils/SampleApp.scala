@@ -16,11 +16,11 @@ trait SampleApp extends App {
   val port = samplesConfig.getInt("server.port")
 
   implicit class Rainbow(val s: String) {
-    def green: String  = Console.GREEN + s + Console.RESET
-    def red: String    = Console.RED + s + Console.RESET
+    def green: String = Console.GREEN + s + Console.RESET
+    def red: String = Console.RED + s + Console.RESET
     def yellow: String = Console.YELLOW + s + Console.RESET
-    def bold: String   = Console.BOLD + s + Console.RESET
+    def bold: String = Console.BOLD + s + Console.RESET
   }
 
-  println(s"\n\nRunning: ${ getClass.getSimpleName.replaceAll("\\$", "") }".bold)
+  println(s"\n\nRunning: ${getClass.getSimpleName.replaceAll("\\$", "")}".bold)
 }

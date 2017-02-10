@@ -12,12 +12,11 @@ trait MakingUpData {
 
   def shortNameId(): String = s"$char$char$char"
 
-  def shortName(): String = s"${ char.toUpper }${ char.toLower }${ char.toLower }${ char.toLower }${ char.toLower }"
+  def shortName(): String = s"${char.toUpper}${char.toLower}${char.toLower}${char.toLower}${char.toLower}"
 
   def lipsum(): String = Random.shuffle(lipsumWords).take(rnd.nextInt(5, 20)).mkString(" ") + "."
 
   def int(): Int = rnd.nextInt(0, 1001)
-
 
   val lipsumWords = List(
     "a", "ac", "accumsan", "ad", "adipiscing",
@@ -51,5 +50,5 @@ trait MakingUpData {
     "urna", "ut", "varius", "vehicula", "vel", "velit", "venenatis",
     "vestibulum", "vitae", "vivamus", "viverra", "volutpat",
     "vulputate"
-    )
+  )
 }

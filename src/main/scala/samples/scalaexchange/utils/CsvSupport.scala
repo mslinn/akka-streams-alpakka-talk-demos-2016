@@ -1,8 +1,8 @@
 package samples.scalaexchange.utils
 
 import akka.NotUsed
-import akka.http.scaladsl.marshalling.{Marshaller, Marshalling}
-import akka.http.scaladsl.model.{ContentTypes, HttpCharsets, MediaTypes}
+import akka.http.scaladsl.marshalling.{ Marshaller, Marshalling }
+import akka.http.scaladsl.model.{ ContentTypes, HttpCharsets, MediaTypes }
 import akka.stream.Materializer
 import akka.stream.scaladsl.Flow
 import akka.util.ByteString
@@ -25,8 +25,8 @@ trait CsvMarshalling {
   type BS = ByteString
 
   // implicit marshallers
-//  implicit def t1AsCsvString(implicit mat: Materializer): Marshaller[Tuple1[BS], BS] =
-//    Marshaller.withFixedContentType(ContentTypes.`text/csv(UTF-8)`) { productToCsv(_) }
+  //  implicit def t1AsCsvString(implicit mat: Materializer): Marshaller[Tuple1[BS], BS] =
+  //    Marshaller.withFixedContentType(ContentTypes.`text/csv(UTF-8)`) { productToCsv(_) }
   implicit def t2AsCsvString(implicit mat: Materializer): Marshaller[(BS, BS), BS] =
     Marshaller.withFixedContentType(ContentTypes.`text/csv(UTF-8)`) { productToCsv(_) }
   implicit def t3AsCsvString(implicit mat: Materializer): Marshaller[(BS, BS, BS), BS] =
@@ -73,10 +73,10 @@ trait CsvMarshalling {
   implicit def lAsCsvString(implicit mat: Materializer): Marshaller[Iterable[BS], BS] =
     Marshaller.withFixedContentType(ContentTypes.`text/csv(UTF-8)`) { l => productToCsv(l.toList) } // TODO cuz' lazy today
 
-  private def intersperse[A](a : List[A], b : List[A]): List[A] = a match {
-      case first :: rest => first :: intersperse(b, rest)
-      case _             => b
-    }
+  private def intersperse[A](a: List[A], b: List[A]): List[A] = a match {
+    case first :: rest => first :: intersperse(b, rest)
+    case _ => b
+  }
 
   private def productToCsv(t: Product): BS =
     productToCsv(t.productIterator.toList.asInstanceOf[List[BS]])
