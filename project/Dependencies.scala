@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  object Version {
+  object V {
     val akka     = "2.4.16"
     val akkaHttp = "10.0.3"
     val akkaStreamKafka = "0.13"
@@ -10,35 +10,35 @@ object Dependencies {
   }
 
   object Compile {
-    val akkaActor            = "com.typesafe.akka" %% "akka-actor"                        % Version.akka
+    val akkaActor: ModuleID = "com.typesafe.akka"            %% "akka-actor"                 % V.akka              withSources()
 
-    val akkaStream           = "com.typesafe.akka" %%"akka-stream"                        % Version.akka
+    val akkaStream: ModuleID           = "com.typesafe.akka" %% "akka-stream"                % V.akka              withSources()
 
-    val akkaHttpCore         = "com.typesafe.akka" %% "akka-http-core"                    % Version.akkaHttp
-    val akkaHttp             = "com.typesafe.akka" %% "akka-http"                         % Version.akkaHttp
-    val akkaHttpSprayJson    = "com.typesafe.akka" %% "akka-http-spray-json"              % Version.akkaHttp
-    val akkaHttpJacksonJson  = "com.typesafe.akka" %% "akka-http-jackson"                 % Version.akkaHttp
-    val akkaHttpXml          = "com.typesafe.akka" %% "akka-http-xml"                     % Version.akkaHttp
-    val akkaHttpTestkit      = "com.typesafe.akka" %% "akka-http-testkit"                 % Version.akkaHttp
-    val akkaStreamTestkit    = "com.typesafe.akka" %% "akka-stream-testkit"               % Version.akka
+    val akkaHttpCore: ModuleID         = "com.typesafe.akka" %% "akka-http-core"             % V.akkaHttp          withSources()
+    val akkaHttp: ModuleID             = "com.typesafe.akka" %% "akka-http"                  % V.akkaHttp          withSources()
+    val akkaHttpSprayJson: ModuleID    = "com.typesafe.akka" %% "akka-http-spray-json"       % V.akkaHttp          withSources()
+    val akkaHttpJacksonJson: ModuleID  = "com.typesafe.akka" %% "akka-http-jackson"          % V.akkaHttp          withSources()
+    val akkaHttpXml: ModuleID          = "com.typesafe.akka" %% "akka-http-xml"              % V.akkaHttp          withSources()
+    val akkaHttpTestkit: ModuleID      = "com.typesafe.akka" %% "akka-http-testkit"          % V.akkaHttp          withSources()
+    val akkaStreamTestkit: ModuleID    = "com.typesafe.akka" %% "akka-stream-testkit"        % V.akka              withSources()
 
-    val akkaTestKit          = "com.typesafe.akka" %% "akka-testkit"                      % Version.akka
-    val akkaMultiNodeTestKit = "com.typesafe.akka" %% "akka-multi-node-testkit"           % Version.akka
+    val akkaTestKit: ModuleID          = "com.typesafe.akka" %% "akka-testkit"               % V.akka              withSources()
+    val akkaMultiNodeTestKit: ModuleID = "com.typesafe.akka" %% "akka-multi-node-testkit"    % V.akka              withSources()
 
-    // --- ALPAKKA ---
-    val akkaStreamKafka       = "com.typesafe.akka" %% "akka-stream-kafka"                 % Version.akkaStreamKafka
-    val akkaStreamContrib     = "com.typesafe.akka" %% "akka-stream-contrib"               % Version.akkaStreamContrib
-    val akkaStreamContribAmqp = "com.typesafe.akka" %% "akka-stream-contrib-amqp"          % Version.akkaStreamContrib
-    val akkaStreamContribMqtt = "com.typesafe.akka" %% "akka-stream-contrib-mqtt"          % Version.akkaStreamContrib
-    val akkaStreamContribXmlDeps = "com.fasterxml"   % "aalto-xml"                         % "1.0.0" // replace with XML module when published
-    // --- ALPAKKA ---
+    // --- ALPAKKA start ---
+    val akkaStreamKafka: ModuleID       = "com.typesafe.akka" %% "akka-stream-kafka"         % V.akkaStreamKafka   withSources()
+    val akkaStreamContrib: ModuleID     = "com.typesafe.akka" %% "akka-stream-contrib"       % V.akkaStreamContrib withSources()
+    val akkaStreamContribAmqp: ModuleID = "com.typesafe.akka" %% "akka-stream-contrib-amqp"  % V.akkaStreamContrib withSources()
+    val akkaStreamContribMqtt: ModuleID = "com.typesafe.akka" %% "akka-stream-contrib-mqtt"  % V.akkaStreamContrib withSources()
+    val akkaStreamContribXmlDeps: ModuleID = "com.fasterxml"   % "aalto-xml"                 % "1.0.0" // replace with XML module when published
+    // --- ALPAKKA end ---
 
-    val akkaSlf4j            = "com.typesafe.akka" %% "akka-slf4j"                    % Version.akka
-    val logbackClassic       = "ch.qos.logback"    %  "logback-classic"               % Version.logback
+    val akkaSlf4j: ModuleID            = "com.typesafe.akka"  %% "akka-slf4j"                % V.akka              withSources()
+    val logbackClassic: ModuleID       = "ch.qos.logback"     %  "logback-classic"           % V.logback           withSources()
   }
   object Test {
-    val scalaTest = "org.scalatest" %% "scalatest"  % "3.0.1" % "test"
-    val commonsIo = "commons-io"     % "commons-io" % "2.5"   % "test"
+    val scalaTest: ModuleID = "org.scalatest" %% "scalatest"  % "3.0.1" % "test" withSources()
+    val commonsIo: ModuleID = "commons-io"     % "commons-io" % "2.5"   % "test" withSources()
   }
 
   import Compile._
@@ -46,10 +46,10 @@ object Dependencies {
   private val streams = Seq(akkaStream, akkaStreamTestkit)
   private val logging = Seq(akkaSlf4j, logbackClassic)
 
-  val core = Seq(akkaActor, akkaTestKit) ++ streams ++ testing ++ logging
-  val engine = Seq(akkaActor) ++ testing ++ logging
-  val service = Seq(akkaActor, akkaHttpCore, akkaHttp, akkaHttpSprayJson, akkaHttpXml, akkaHttpTestkit) ++ testing ++ logging
-  val alpakka = Seq(akkaStreamKafka, akkaStreamContrib, akkaHttpJacksonJson, akkaHttpSprayJson, akkaStreamContribAmqp, akkaStreamContribMqtt, akkaStreamContribXmlDeps)
+  val core: Seq[ModuleID] = Seq(akkaActor, akkaTestKit) ++ streams ++ testing ++ logging
+  val engine: Seq[ModuleID] = Seq(akkaActor) ++ testing ++ logging
+  val service: Seq[ModuleID] = Seq(akkaActor, akkaHttpCore, akkaHttp, akkaHttpSprayJson, akkaHttpXml, akkaHttpTestkit) ++ testing ++ logging
+  val alpakka: Seq[ModuleID] = Seq(akkaStreamKafka, akkaStreamContrib, akkaHttpJacksonJson, akkaHttpSprayJson, akkaStreamContribAmqp, akkaStreamContribMqtt, akkaStreamContribXmlDeps)
 
-  val all = core ++ engine ++ service ++ alpakka
+  val all: Seq[ModuleID] = core ++ engine ++ service ++ alpakka
 }
