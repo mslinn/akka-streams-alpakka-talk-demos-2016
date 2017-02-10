@@ -19,7 +19,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import static akka.http.javadsl.server.Directives.*;
 
 public class Step3Monitoring {
-
   public static void main(String[] args) {
     ActorSystem system = ActorSystem.create();
     Materializer materializer = ActorMaterializer.create(system);
@@ -28,7 +27,7 @@ public class Step3Monitoring {
     // dynamic *shared* fan-in fan-out's
     final Source<String, Sink<String, NotUsed>> mergeHub = MergeHub.of(String.class);
     final Sink<String, Source<String, NotUsed>> broadcastHub = BroadcastHub.of(String.class);
-    
+
     final Pair<Sink<String, NotUsed>, Source<String, NotUsed>> hubPair =
       mergeHub.toMat(broadcastHub, Keep.both()).run(materializer);
     final Sink<String, NotUsed> progressIn = hubPair.first();
@@ -38,10 +37,10 @@ public class Step3Monitoring {
     for (int i = 0; i < 10; i++) {
       final String jobId = "job-00" + i;
       System.out.println("Starting job: " + jobId);
-      
-      
-      
-      ProgressReporter.reportTo(jobId, 
+
+
+
+      ProgressReporter.reportTo(jobId,
         ThreadLocalRandom.current().nextInt(500, 2000), progressIn, materializer);
     }
 
@@ -66,7 +65,5 @@ public class Step3Monitoring {
       materializer
     );
     System.out.println("Running at http://localhost:8080/index");
-
   }
-
 }

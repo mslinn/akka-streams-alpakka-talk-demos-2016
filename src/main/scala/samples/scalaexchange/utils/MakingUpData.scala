@@ -12,7 +12,7 @@ trait MakingUpData {
 
   def shortNameId(): String = s"$char$char$char"
 
-  def shortName(): String = s"${char.toUpper}${char.toLower}${char.toLower}${char.toLower}${char.toLower}"
+  def shortName(): String = s"${ char.toUpper }${ char.toLower }${ char.toLower }${ char.toLower }${ char.toLower }"
 
   def lipsum(): String = Random.shuffle(lipsumWords).take(rnd.nextInt(5, 20)).mkString(" ") + "."
 

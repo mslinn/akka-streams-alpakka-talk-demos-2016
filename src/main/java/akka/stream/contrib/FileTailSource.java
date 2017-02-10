@@ -30,7 +30,6 @@ import java.nio.file.StandardOpenOption;
  * Aborting the stage can be done by combining with a [[akka.stream.KillSwitch]]
  */
 public final class FileTailSource extends GraphStage<SourceShape<ByteString>> {
-
   private final Path path;
   private final int maxChunkSize;
   private final long startingPosition;
@@ -51,7 +50,7 @@ public final class FileTailSource extends GraphStage<SourceShape<ByteString>> {
     }
   };
 
-  public FileTailSource(Path path, int maxChunkSize, long startingPosition, FiniteDuration pollingInterval) {
+  private FileTailSource(Path path, int maxChunkSize, long startingPosition, FiniteDuration pollingInterval) {
     this.path = path;
     this.maxChunkSize = maxChunkSize;
     this.startingPosition = startingPosition;
@@ -165,5 +164,4 @@ public final class FileTailSource extends GraphStage<SourceShape<ByteString>> {
   public static akka.stream.scaladsl.Source<ByteString, NotUsed> apply(Path path, int maxChunkSize, long startingPosition, FiniteDuration pollingInterval) {
     return create(path, maxChunkSize, startingPosition, pollingInterval).asScala();
   }
-
 }

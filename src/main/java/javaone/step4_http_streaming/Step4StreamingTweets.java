@@ -15,9 +15,8 @@ import akka.stream.javadsl.Source;
 import javaone.step3_http_streaming.Jackson;
 
 import static akka.http.javadsl.server.Directives.completeWithSource;
-import static akka.http.javadsl.server.Directives.path; 
+import static akka.http.javadsl.server.Directives.path;
 public class Step4StreamingTweets {
-
   public static void main(String[] args) {
     ActorSystem system = ActorSystem.create();
     Materializer materializer = ActorMaterializer.create(system);
@@ -31,7 +30,6 @@ public class Step4StreamingTweets {
         completeWithSource(tweets, Jackson.marshaller(), EntityStreamingSupport.json())
       );
 
-
     final Flow<HttpRequest, HttpResponse, NotUsed> handler =
       tweetsRoute.flow(system, materializer);
 
@@ -40,17 +38,16 @@ public class Step4StreamingTweets {
       materializer
     );
     System.out.println("Running at http://localhost:8080");
-
   }
 }
 
 class Tweet {
-  final String text;
+  private final String text;
 
   public Tweet() {
     text = "";
   }
-  public Tweet(String text) {
+  Tweet(String text) {
     this.text = text;
   }
 

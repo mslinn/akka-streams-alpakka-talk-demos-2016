@@ -20,7 +20,7 @@ public class Jackson {
     return marshaller(defaultObjectMapper);
   }
 
-  public static <T> Marshaller<T, ByteString> marshaller(ObjectMapper mapper) {
+  private static <T> Marshaller<T, ByteString> marshaller(ObjectMapper mapper) {
     return Marshaller.withFixedContentType(
       ContentTypes.APPLICATION_JSON,
       u -> ByteString.fromString(toJSON(mapper, u))
@@ -30,17 +30,17 @@ public class Jackson {
   public static <T> Unmarshaller<ByteString, T> byteStringUnmarshaller(Class<T> expectedType) {
     return byteStringUnmarshaller(defaultObjectMapper, expectedType);
   }
-  
+
   public static <T> Unmarshaller<HttpEntity, T> unmarshaller(Class<T> expectedType) {
     return unmarshaller(defaultObjectMapper, expectedType);
   }
 
-  public static <T> Unmarshaller<HttpEntity, T> unmarshaller(ObjectMapper mapper, Class<T> expectedType) {
+  private static <T> Unmarshaller<HttpEntity, T> unmarshaller(ObjectMapper mapper, Class<T> expectedType) {
     return Unmarshaller.forMediaType(MediaTypes.APPLICATION_JSON, Unmarshaller.entityToString())
                        .thenApply(s -> fromJSON(mapper, s, expectedType));
   }
-  
-  public static <T> Unmarshaller<ByteString, T> byteStringUnmarshaller(ObjectMapper mapper, Class<T> expectedType) {
+
+  private static <T> Unmarshaller<ByteString, T> byteStringUnmarshaller(ObjectMapper mapper, Class<T> expectedType) {
     return Unmarshaller.sync(s -> fromJSON(mapper, s.utf8String(), expectedType));
   }
 

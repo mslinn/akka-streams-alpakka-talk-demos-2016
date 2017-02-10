@@ -19,7 +19,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import scala.concurrent.duration.FiniteDuration;
-
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -27,13 +26,10 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 public class Step1KafkaLogStreamer {
-
   private final static int MAX_CHUNK_SIZE = 1000;
   private final static FiniteDuration POLLING_INTERVAL = FiniteDuration.apply(1L, TimeUnit.MILLISECONDS);
 
-
   public static void main(String[] args) {
-
     final FileSystem fs = FileSystems.getDefault();
     final Path logfile = fs.getPath("watch-me.log");
     System.out.println("Watching: " + logfile);
@@ -43,16 +39,13 @@ public class Step1KafkaLogStreamer {
     final Materializer materializer = ActorMaterializer.create(system);
 
     final Attributes logLevels = ActorAttributes.createLogLevels(Logging.InfoLevel(), Logging.InfoLevel(), Logging.InfoLevel());
-    
-    
+
     final ProducerSettings<byte[], String> producerSettings = ProducerSettings
       .create(system, new ByteArraySerializer(), new StringSerializer())
       .withBootstrapServers("127.0.0.1:9092");
 
-    /*
-      fortune | head -n1 >> watch-me.log
-     */
-    
+    /* fortune | head -n1 >> watch-me.log */
+
     final Source<String, NotUsed> logLines =
       FileTailSource.create(
         logfile,
@@ -70,7 +63,5 @@ public class Step1KafkaLogStreamer {
       .map(line -> new ProducerRecord<byte[], String>(topic, line))
       .to(kafkaSink)
       .run(materializer);
-
   }
-
 }

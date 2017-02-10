@@ -33,20 +33,20 @@ public class Step2BotDetection {
 
     /*
       bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning
-      
-      while [ "1" == "1" ] 
+
+      while [ "1" == "1" ]
       do
         fortune | head -n1 >> watch-me.log
       done
      */
-    
-    final Source<ConsumerRecord<byte[], String>, Consumer.Control> kafkaSource = 
+
+    final Source<ConsumerRecord<byte[], String>, Consumer.Control> kafkaSource =
       Consumer.plainSource(consumerSettings, Subscriptions.topics(topic))
       ;
-    
-    
+
+
     kafkaSource
-      .map(record -> parseLine(record.value())) 
+      .map(record -> parseLine(record.value()))
       .filter(Try::isSuccess) // filter out unparseable
       .map(tweet -> detectBot(tweet.get()))
       .filter(result -> result.isBot)
@@ -57,8 +57,8 @@ public class Step2BotDetection {
 
 
   public static class TweetFromFile {
-    public final String message;
-    public TweetFromFile(String message) {
+    final String message;
+    TweetFromFile(String message) {
       this.message = message;
     }
 
@@ -69,11 +69,11 @@ public class Step2BotDetection {
         '}';
     }
   }
-  
+
   private static class BotDetectionResult {
-    public final boolean isBot;
-    public final TweetFromFile entry;
-    public BotDetectionResult(boolean isBot, TweetFromFile entry) {
+    final boolean isBot;
+    final TweetFromFile entry;
+    BotDetectionResult(boolean isBot, TweetFromFile entry) {
       this.isBot = isBot;
       this.entry = entry;
     }

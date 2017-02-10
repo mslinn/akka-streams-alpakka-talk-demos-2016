@@ -17,7 +17,6 @@ import akka.stream.javadsl.*;
 import static akka.http.javadsl.server.Directives.*;
 
 public class Step3WebSocketChat {
-
   public static void main(String[] args) {
     ActorSystem system = ActorSystem.create();
     Materializer materializer = ActorMaterializer.create(system);
@@ -57,7 +56,5 @@ public class Step3WebSocketChat {
       materializer
     );
     System.out.println("Running at http://localhost:8080/index");
-
   }
-
 }
